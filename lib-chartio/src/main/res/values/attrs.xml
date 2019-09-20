@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LineChartView">
+        <attr name="lineColor" format="color" />
+        <attr name="lineWidth" format="dimension" />
+        <attr name="lineRoundRadius" format="dimension" />
+
+        <attr name="gridEnabled" format="boolean" />
+        <attr name="gridColor" format="color" />
+        <attr name="gridLineWidth" format="dimension" />
+        <attr name="gridGapWidth" format="dimension" />
+        <attr name="gridTextColor" format="color" />
+        <attr name="gridLineTextPadding" format="dimension" />
+        <attr name="gridTextSize" format="dimension" />
+
+        <attr name="minGridLinesCount" format="integer" />
+        <attr name="maxGridLinesCount" format="integer" />
+
+    </declare-styleable>
+</resources>
