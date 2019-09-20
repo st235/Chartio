@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LineChartView">
+        <attr name="chartFillColors" format="reference" />
+
         <attr name="lineColor" format="color" />
         <attr name="lineWidth" format="dimension" />
         <attr name="lineRoundRadius" format="dimension" />

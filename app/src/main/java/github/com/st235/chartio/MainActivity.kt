@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         chartView = findViewById(R.id.chart)
 
         chartView.adapter = object : ChartioAdapter() {
-            val array = floatArrayOf(0F, 1F, 2F, 3F, 5F)
+            val array = floatArrayOf(10F, 15F, 20F, 30F, 50F)
 
             override fun getSize(): Int = array.size
 

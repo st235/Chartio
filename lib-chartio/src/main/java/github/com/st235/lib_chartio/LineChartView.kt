@@ -8,6 +8,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import github.com.st235.lib_chartio.events.OnPointSelectedListener
 import github.com.st235.lib_chartio.extensions.findNearest
+import github.com.st235.lib_chartio.highlight.ChartHighlightDrawer
+import github.com.st235.lib_chartio.highlight.SimpleHighlightDotDrawer
 import github.com.st235.lib_chartio.utils.*
 import github.com.st235.lib_chartio.utils.spToPx
 import github.com.st235.lib_chartio.utils.toPx
@@ -17,7 +19,6 @@ class LineChartView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     companion object {
-        val HIGHLIGHTED_POINT_RADIUS = 8F.toPx()
         val GRID_TEXT_PADDING = 8F.toPx()
 
         const val MIN_GRID_LINES = 3
@@ -29,9 +30,14 @@ class LineChartView @JvmOverloads constructor(
         val POSSIBLE_GRID_STEPS = intArrayOf(10000, 5000, 2000, 1000, 500, 300, 200, 100, 10, 5)
     }
 
+    private var shouldDrawGrid = true
+
     private val strokePath = Path()
     private val fillPath = Path()
     private val gridPath = Path()
+
+    private lateinit var colorsArray: IntArray
+    private lateinit var positionsArray: FloatArray
 
     private val gridLineCoordinates = mutableListOf<Pair<String, Float>>()
 
@@ -51,10 +57,7 @@ class LineChartView @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
 
-    private val highlightedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.FILL
-//        color = ContextCompat.getColor(context, R.color.colorChartHighlightedPoint)
-    }
+    private val highlightDrawer: ChartHighlightDrawer = SimpleHighlightDotDrawer()
 
     private val chartBounds = RectF()
     private val viewportBounds = RectF()
@@ -107,6 +110,19 @@ class LineChartView @JvmOverloads constructor(
 
             gridTextPaint.color = array.getColor(R.styleable.LineChartView_gridTextColor, Color.GRAY)
             gridTextPaint.textSize = array.getDimension(R.styleable.LineChartView_gridTextSize, 12F.toPx())
+
+            shouldDrawGrid = array.getBoolean(R.styleable.LineChartView_gridEnabled, true)
+
+            val colorId = array.getResourceId(R.styleable.LineChartView_chartFillColors, -1)
+
+            if (colorId == -1) {
+                colorsArray = intArrayOf()
+                positionsArray = floatArrayOf()
+            } else {
+                colorsArray = context.resources.getStringArray(colorId).map { Color.parseColor(it) }.toIntArray()
+                positionsArray = colorsArray.withIndex().map { (index, _) -> index.toFloat() / colorsArray.size }.toFloatArray()
+            }
+
         }
 
         isClickable = true
@@ -132,8 +148,7 @@ class LineChartView @JvmOverloads constructor(
         baseFillPaint.shader =
             LinearGradient(
                 0F, 0F, 0F, h.toFloat(),
-                Color.WHITE,
-                Color.BLACK,
+                colorsArray, positionsArray,
                 Shader.TileMode.CLAMP
             )
         populatePath()
@@ -142,19 +157,16 @@ class LineChartView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        drawGrid(canvas)
+        if (shouldDrawGrid) {
+            drawGrid(canvas)
+        }
 
         canvas?.drawPath(fillPath, baseFillPaint)
         canvas?.drawPath(strokePath, basePaint)
 
         val highlightedPoint = highlightedPoint
         if (highlightedPoint != null) {
-            canvas?.drawCircle(
-                highlightedPoint.x,
-                highlightedPoint.y,
-                HIGHLIGHTED_POINT_RADIUS,
-                highlightedPaint
-            )
+            highlightDrawer.draw(at = highlightedPoint, on = canvas)
         }
     }
 
@@ -194,7 +206,7 @@ class LineChartView @JvmOverloads constructor(
         clearState()
 
         chartBounds.set(adapter.calculateBounds())
-        val sizeResolver = LineChartSizeHelper(chartBounds, viewportBounds, basePaint.strokeWidth, HIGHLIGHTED_POINT_RADIUS)
+        val sizeResolver = LineChartSizeHelper(chartBounds, viewportBounds, basePaint.strokeWidth, highlightDrawer.size()[0])
         this.sizeResolver = sizeResolver
 
         for (i in 0 until adapter.getSize()) {
