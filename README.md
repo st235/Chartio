@@ -25,7 +25,7 @@ To integrate charts into projects you should start from xml
 
 ## Screens
 
-<img src="https://raw.githubusercontent.com/st235/Chartio/master/images/charts.png" width="270" height="385">
+<img src="https://raw.githubusercontent.com/st235/Chartio/master/images/chart_1.png" width="540" height="256"> <img src="https://raw.githubusercontent.com/st235/Chartio/master/images/chart_2.png" width="540" height="256"> <img src="https://raw.githubusercontent.com/st235/Chartio/master/images/chart_3.png" width="540" height="256">
 
 ### License
 
