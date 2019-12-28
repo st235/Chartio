@@ -1,16 +1,22 @@
 package github.com.st235.lib_chartio
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.annotation.FloatRange
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import github.com.st235.lib_chartio.drawingdelegates.background.BackgroundDrawingDelegate
 import github.com.st235.lib_chartio.drawingdelegates.background.GradientDrawingDelegate
+import github.com.st235.lib_chartio.drawingdelegates.background.NoBackgroundDrawingGradient
 import github.com.st235.lib_chartio.drawingdelegates.grid.GridDrawingDelegate
 import github.com.st235.lib_chartio.drawingdelegates.grid.HorizontalGridDrawingDelegate
-import github.com.st235.lib_chartio.events.OnPointSelectedListener
+import github.com.st235.lib_chartio.internal.events.ChartTouchListener
 import github.com.st235.lib_chartio.drawingdelegates.highlight.HighlightDrawingDelegate
-import github.com.st235.lib_chartio.drawingdelegates.highlight.SimpleHighlightDotDrawingDelegate
+import github.com.st235.lib_chartio.drawingdelegates.highlight.SimpleDotHighlightDrawingDelegate
 import github.com.st235.lib_chartio.drawingdelegates.line.LineDrawingDelegate
 import github.com.st235.lib_chartio.drawingdelegates.line.StrokeSolidDrawingDelegate
 import github.com.st235.lib_chartio.internal.PointsTransformationHelper
@@ -25,6 +31,8 @@ class ChartioView @JvmOverloads constructor(
 
     private val fillPath = Path()
     private val strokePath = Path()
+    private val strokePathMeasure = PathMeasure(strokePath, false)
+    private val animatedPath = Path()
 
     private val chartBounds = RectF()
     private val viewportBounds = RectF()
@@ -35,11 +43,12 @@ class ChartioView @JvmOverloads constructor(
     private val lineDrawingDelegate: LineDrawingDelegate
     private val backgroundDrawingDelegate: BackgroundDrawingDelegate
     private val gridDrawingDelegate: GridDrawingDelegate
-    private val highlightDrawingDelegate: HighlightDrawingDelegate = SimpleHighlightDotDrawingDelegate()
+
+    private val lineRoundRadius: Float
 
     private val lineChartProcessor = PointsProcessor()
     private val lineChartClickListener =
-        OnPointSelectedListener().apply {
+        ChartTouchListener().apply {
             addListener {
                 val point = lineChartProcessor.findNearestTo(it.first, it.second)
                 if (point != null) {
@@ -52,7 +61,25 @@ class ChartioView @JvmOverloads constructor(
 
     private val pointSelectionObservers = ObservableModel<Any>()
 
-    var adapter: CharioAdaper? = null
+    private var isAnimated: Boolean = false
+
+    @FloatRange(from = 0.0, to = 1.0)
+    private var animationProgress: Float = 1F
+    set(value) {
+        field = value
+        invalidate()
+    }
+
+    private val shouldAnimateOnNewData: Boolean
+    private val animationDuration: Long
+
+    var highlightDrawingDelegate: HighlightDrawingDelegate = SimpleDotHighlightDrawingDelegate()
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    var adapter: ChartioAdaper? = null
         set(value) {
             field = value
             value?.setOnDataChangedListener {
@@ -66,14 +93,23 @@ class ChartioView @JvmOverloads constructor(
 
         val lineColor = typedArray.getColor(R.styleable.ChartioView_lineColor, Color.BLACK)
         val lineWidth = typedArray.getDimension(R.styleable.ChartioView_lineWidth, 0F)
-        val lineRoundRadius = typedArray.getDimension(R.styleable.ChartioView_lineRoundRadius, 0F)
+        lineRoundRadius = typedArray.getDimension(R.styleable.ChartioView_lineRoundRadius, 0F)
         lineDrawingDelegate = StrokeSolidDrawingDelegate(lineColor, lineWidth, CornerPathEffect(lineRoundRadius).takeIf { lineRoundRadius > 0F })
 
         val colorId = typedArray.getResourceId(R.styleable.ChartioView_chartFillColors, -1)
+        val positionId = typedArray.getResourceId(R.styleable.ChartioView_chartFillPositions, -1)
 
         val colors = if (colorId == -1) intArrayOf() else context.resources.getStringArray(colorId).map { Color.parseColor(it) }.toIntArray()
-        val positions = if (colorId == -1) floatArrayOf() else colors.withIndex().map { (index, _) -> index.toFloat() / colors.size }.toFloatArray()
-        backgroundDrawingDelegate = GradientDrawingDelegate(colors, positions, CornerPathEffect(lineRoundRadius).takeIf { lineRoundRadius > 0F })
+        val positions = if (positionId == -1) floatArrayOf() else context.resources.getIntArray(positionId).map { it / 100F }.toFloatArray()
+
+        if (colorId != -1 && positionId != -1) {
+            backgroundDrawingDelegate = GradientDrawingDelegate(
+                colors,
+                positions,
+                CornerPathEffect(lineRoundRadius).takeIf { lineRoundRadius > 0F })
+        } else {
+            backgroundDrawingDelegate = NoBackgroundDrawingGradient()
+        }
 
         val gridColor = typedArray.getColor(R.styleable.ChartioView_gridColor, Color.DKGRAY)
         val gridStrokeWidth = typedArray.getDimension(R.styleable.ChartioView_gridLineWidth, 0F)
@@ -97,6 +133,9 @@ class ChartioView @JvmOverloads constructor(
                ),
                 forceDisable = shouldDisableGrid
             )
+
+        shouldAnimateOnNewData = typedArray.getBoolean(R.styleable.ChartioView_animateOnNewData, false)
+        animationDuration = typedArray.getInteger(R.styleable.ChartioView_animationDuration, 1500).toLong()
 
         typedArray.recycle()
 
@@ -136,6 +175,12 @@ class ChartioView @JvmOverloads constructor(
             gridDrawingDelegate.draw(canvas)
         }
 
+        if (isAnimated) {
+            strokePathMeasure.getSegment(0F, strokePathMeasure.length * animationProgress, animatedPath, true)
+            lineDrawingDelegate.draw(canvas, animatedPath)
+            return
+        }
+
         lineDrawingDelegate.draw(canvas, strokePath)
         backgroundDrawingDelegate.draw(canvas, fillPath)
 
@@ -147,7 +192,12 @@ class ChartioView @JvmOverloads constructor(
 
     private fun onNewData() {
         populatePath()
-        invalidate()
+
+        if (shouldAnimateOnNewData) {
+            animateData()
+        } else {
+            invalidate()
+        }
     }
 
     private fun populatePath() {
@@ -199,10 +249,11 @@ class ChartioView @JvmOverloads constructor(
         highlightedPoint = PointF(lastPoint.first, lastPoint.second)
         pointSelectionObservers.notifyWith(lastPoint.third)
 
+        strokePathMeasure.setPath(strokePath, false)
         fillPath.addPath(strokePath)
 
-        fillPath.lineTo(lastPoint.first, height.toFloat())
-        fillPath.lineTo( firstPoint.first, height.toFloat())
+        fillPath.lineTo(lastPoint.first, height + lineRoundRadius)
+        fillPath.lineTo( firstPoint.first, height + lineRoundRadius)
         fillPath.lineTo(firstPoint.first, firstPoint.second)
 
         gridDrawingDelegate.prepare(chartBounds, sizeResolver)
@@ -213,7 +264,24 @@ class ChartioView @JvmOverloads constructor(
         sizeResolver = null
         fillPath.reset()
         strokePath.reset()
+        animatedPath.reset()
         lineChartProcessor.clear()
+    }
+
+    private fun animateData() {
+        val animator = ValueAnimator.ofFloat(0F, 1F)
+        animator.duration = animationDuration
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener {
+            animationProgress = (it.animatedValue as Float)
+        }
+        animator.doOnStart {
+            isAnimated = true
+        }
+        animator.doOnEnd {
+            isAnimated = false
+        }
+        animator.start()
     }
 
     private fun maxPadding(vararg rects: RectF): RectF {

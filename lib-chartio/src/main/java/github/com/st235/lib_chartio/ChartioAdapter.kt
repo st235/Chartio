@@ -11,7 +11,7 @@ internal typealias OnDataChangedListener = () -> Unit
  * Line chart data adapter.
  * Helps load data into the chart view.
  */
-abstract class CharioAdaper {
+abstract class ChartioAdaper {
 
     private var onDataChangedListener: OnDataChangedListener? = null
 

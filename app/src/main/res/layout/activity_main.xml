@@ -1,24 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <github.com.st235.lib_chartio.ChartioView
-        android:id="@+id/chart"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        app:lineWidth="1dp"
-        android:background="#88FF00FF"
-        app:lineRoundRadius="3dp"
-        app:gridGapWidth="4dp"
-        app:chartFillColors="@array/colors"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#232f38">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:text="0.0 $" />
+
+        <github.com.st235.lib_chartio.ChartioView
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            app:lineWidth="2dp"
+            android:paddingBottom="8dp"
+            app:lineRoundRadius="4dp"
+            app:lineColor="#f25749"
+            app:gridEnabled="false"
+            app:chartFillColors="@array/colors"
+            app:chartFillPositions="@array/positions"
+            app:animateOnNewData="true"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F6F6F5">
+
+        <TextView
+            android:id="@+id/value2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#232f38"
+            android:textSize="18sp"
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:text="0.0 $" />
+
+        <github.com.st235.lib_chartio.ChartioView
+            android:id="@+id/chart2"
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            app:lineWidth="4dp"
+            android:paddingBottom="8dp"
+            app:lineRoundRadius="4dp"
+            app:lineColor="#C847F4"
+            app:gridEnabled="false"
+            app:chartFillColors="@array/colors2"
+            app:chartFillPositions="@array/positions"
+            app:animateOnNewData="true"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F9848B">
+
+        <TextView
+            android:id="@+id/value3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:text="0.0 $" />
+
+        <github.com.st235.lib_chartio.ChartioView
+            android:id="@+id/chart3"
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            app:lineWidth="4dp"
+            android:paddingBottom="8dp"
+            app:lineRoundRadius="4dp"
+            app:lineColor="@android:color/white"
+            app:gridEnabled="false"
+            app:animateOnNewData="true"
+            />
+    </LinearLayout>
+
+</LinearLayout>

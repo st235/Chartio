@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="ChartioView">
         <attr name="chartFillColors" format="reference" />
+        <attr name="chartFillPositions" format="reference" />
 
         <attr name="lineColor" format="color" />
         <attr name="lineWidth" format="dimension" />
@@ -17,6 +18,9 @@
 
         <attr name="minGridLinesCount" format="integer" />
         <attr name="maxGridLinesCount" format="integer" />
+
+        <attr name="animateOnNewData" format="boolean" />
+        <attr name="animationDuration" format="integer" />
 
     </declare-styleable>
 </resources>

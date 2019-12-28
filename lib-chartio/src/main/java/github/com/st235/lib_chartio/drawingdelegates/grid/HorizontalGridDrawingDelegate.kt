@@ -39,7 +39,7 @@ internal class HorizontalGridDrawingDelegate(
             0F,
             textPaint.possibleMaxHeight() + GRID_TEXT_PADDING,
             0F,
-            textPaint.possibleMaxHeight() + GRID_TEXT_PADDING
+            0F
         )
 
     override fun prepare(chartBounds: RectF, pointsTransformerHelper: PointsTransformationHelper) {
