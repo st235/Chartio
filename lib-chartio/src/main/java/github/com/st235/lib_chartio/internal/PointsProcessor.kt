@@ -1,8 +1,8 @@
-package github.com.st235.lib_chartio
+package github.com.st235.lib_chartio.internal
 
 import kotlin.math.abs
 
-class LineChartPointsProcessor {
+internal class PointsProcessor {
 
     /**
      * Points list is needed for a binary search afterward

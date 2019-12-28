@@ -1,4 +1,4 @@
-package github.com.st235.lib_chartio.utils
+package github.com.st235.lib_chartio.internal.utils
 
 typealias Listener<T> = (response: T) -> Unit
 
@@ -8,7 +8,7 @@ typealias Listener<T> = (response: T) -> Unit
  * May be used as parent for a class or observers list field,
  * if inheritance is prohibited
  */
-open class ObservableModel<T> {
+internal open class ObservableModel<T> {
 
     private val listeners: MutableList<Listener<T>> = mutableListOf()
 

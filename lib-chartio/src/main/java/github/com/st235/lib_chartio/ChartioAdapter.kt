@@ -1,15 +1,19 @@
 package github.com.st235.lib_chartio
 
 import android.graphics.RectF
-import github.com.st235.lib_chartio.utils.ObservableModel
+import github.com.st235.lib_chartio.internal.utils.ObservableModel
 import kotlin.math.max
 import kotlin.math.min
+
+internal typealias OnDataChangedListener = () -> Unit
 
 /**
  * Line chart data adapter.
  * Helps load data into the chart view.
  */
-abstract class ChartioAdapter: ObservableModel<Unit>() {
+abstract class CharioAdaper {
+
+    private var onDataChangedListener: OnDataChangedListener? = null
 
     abstract fun getSize(): Int
 
@@ -18,6 +22,10 @@ abstract class ChartioAdapter: ObservableModel<Unit>() {
     abstract fun getY(index: Int): Float
 
     abstract fun getData(index: Int): Any
+
+    internal fun setOnDataChangedListener(listener: OnDataChangedListener) {
+        this.onDataChangedListener = listener
+    }
 
     fun calculateBounds(): RectF {
         var minX = Float.MAX_VALUE
@@ -37,5 +45,9 @@ abstract class ChartioAdapter: ObservableModel<Unit>() {
         }
 
         return RectF(minX, minY, maxX, maxY)
+    }
+
+    fun notifyDataSetChanged() {
+        onDataChangedListener?.invoke()
     }
 }

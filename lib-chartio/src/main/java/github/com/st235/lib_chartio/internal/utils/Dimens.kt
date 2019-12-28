@@ -1,4 +1,4 @@
-package github.com.st235.lib_chartio.utils
+package github.com.st235.lib_chartio.internal.utils
 
 import android.content.res.Resources
 import android.util.TypedValue

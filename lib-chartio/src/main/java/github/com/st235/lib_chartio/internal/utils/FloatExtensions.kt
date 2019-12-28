@@ -1,6 +1,6 @@
-package github.com.st235.lib_chartio.extensions
+package github.com.st235.lib_chartio.internal.utils
 
-fun Float.findNearest(round: Int): Float {
+internal fun Float.findNearest(round: Int): Float {
     if (this <= 0) {
         return 0F
     }

@@ -6,16 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <github.com.st235.lib_chartio.LineChartView
+    <github.com.st235.lib_chartio.ChartioView
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         app:lineWidth="1dp"
+        android:background="#88FF00FF"
         app:lineRoundRadius="3dp"
+        app:gridGapWidth="4dp"
         app:chartFillColors="@array/colors"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
