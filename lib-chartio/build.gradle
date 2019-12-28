@@ -1,6 +1,26 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.novoda.bintray-release'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.9.1'
+    }
+}
+
+publish {
+    userOrg = 'st235'
+    groupId = 'com.github.st235'
+    artifactId = 'chartioview'
+    publishVersion = '0.8'
+    desc = 'Lightweight android linear chart library'
+    website = 'https://github.com/st235/Chartio'
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -9,8 +29,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 7
+        versionName "0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'

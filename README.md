@@ -2,7 +2,38 @@
 
 # Chartio
 
-A lightweight chart library for Android
+[ ![Download](https://api.bintray.com/packages/st235/maven/chartioview/images/download.svg) ](https://bintray.com/st235/maven/chartioview/_latestVersion)
+
+A lightweight linear chart library for Android
+
+## Download me
+
+- Maven
+
+```text
+<dependency>
+  <groupId>com.github.st235</groupId>
+  <artifactId>chartioview</artifactId>
+  <version>X.X</version>
+  <type>pom</type>
+</dependency>
+```
+
+- Gradle
+
+```text
+implementation 'com.github.st235:chartioview:X.X'
+```
+
+- Ivy
+
+```text
+<dependency org='com.github.st235' name='chartioview' rev='X.X'>
+  <artifact name='chartioview' ext='pom' ></artifact>
+</dependency>
+```
+
+P.S.: Check out latest version code in badge at the top of this page.
 
 ## Usage
 
