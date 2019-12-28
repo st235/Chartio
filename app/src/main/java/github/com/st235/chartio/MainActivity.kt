@@ -63,11 +63,16 @@ class MainActivity : AppCompatActivity() {
         private val currency: String
     ) : ChartioAdaper() {
 
-        private val size  = (Math.random() * 50 + 10).toInt()
+        private var size  = (Math.random() * 50 + 10).toInt()
 
-        val values = FloatArray(size)
+        private var values = FloatArray(size)
 
         init {
+            initValues()
+        }
+
+        private fun initValues() {
+            values = FloatArray(size)
             for (i in 0 until size) {
                 values[i] = (Math.random() * 300 + 20).toFloat()
             }
@@ -78,5 +83,11 @@ class MainActivity : AppCompatActivity() {
         override fun getY(index: Int): Float = values[index]
 
         override fun getData(index: Int): Any = String.format("%.0f $currency", values[index])
+
+        fun update() {
+            size  = (Math.random() * 50 + 10).toInt()
+            initValues()
+            notifyDataSetChanged()
+        }
     }
 }
