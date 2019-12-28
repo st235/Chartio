@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/st235/Chartio/master/images/preview.gif" width="600" height="205">
+<img src="https://raw.githubusercontent.com/st235/Chartio/master/images/preview.gif" width="600" height="286">
 
 # Chartio
 
@@ -25,7 +25,7 @@ To integrate charts into projects you should start from xml
 
 ## Screens
 
-<img src="https://raw.githubusercontent.com/st235/Chartio/master/images/charts.png" width="270" height="480">
+<img src="https://raw.githubusercontent.com/st235/Chartio/master/images/charts.png" width="270" height="385">
 
 ### License
 
