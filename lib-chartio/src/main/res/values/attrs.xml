@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ChartioView">
-        <attr name="chartFillColors" format="reference" />
-        <attr name="chartFillPositions" format="reference" />
+        <attr name="cv_chartFillColors" format="reference" />
+        <attr name="cv_chartFillPositions" format="reference" />
 
-        <attr name="lineColor" format="color" />
-        <attr name="lineWidth" format="dimension" />
-        <attr name="lineRoundRadius" format="dimension" />
+        <attr name="cv_lineColor" format="color" />
+        <attr name="cv_lineWidth" format="dimension" />
+        <attr name="cv_lineRoundRadius" format="dimension" />
 
-        <attr name="gridEnabled" format="boolean" />
-        <attr name="gridColor" format="color" />
-        <attr name="gridLineWidth" format="dimension" />
-        <attr name="gridGapWidth" format="dimension" />
-        <attr name="gridTextColor" format="color" />
-        <attr name="gridLineTextPadding" format="dimension" />
-        <attr name="gridTextSize" format="dimension" />
+        <attr name="cv_gridEnabled" format="boolean" />
+        <attr name="cv_gridColor" format="color" />
+        <attr name="cv_gridLineWidth" format="dimension" />
+        <attr name="cv_gridGapWidth" format="dimension" />
+        <attr name="cv_gridStepGap" format="dimension" />
+        <attr name="cv_gridTextColor" format="color" />
+        <attr name="cv_gridLineTextPadding" format="dimension" />
+        <attr name="cv_gridTextSize" format="dimension" />
 
-        <attr name="minGridLinesCount" format="integer" />
-        <attr name="maxGridLinesCount" format="integer" />
+        <attr name="cv_minGridLinesCount" format="integer" />
+        <attr name="cv_maxGridLinesCount" format="integer" />
 
-        <attr name="animateOnNewData" format="boolean" />
-        <attr name="animationDuration" format="integer" />
+        <attr name="cv_animateOnNewData" format="boolean" />
+        <attr name="cv_animationDuration" format="integer" />
 
     </declare-styleable>
 </resources>

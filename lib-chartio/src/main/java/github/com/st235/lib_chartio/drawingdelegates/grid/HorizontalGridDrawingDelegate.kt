@@ -5,14 +5,18 @@ import android.text.TextPaint
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
+import androidx.core.math.MathUtils.clamp
 import github.com.st235.lib_chartio.internal.PointsTransformationHelper
 import github.com.st235.lib_chartio.internal.utils.findNearest
 import github.com.st235.lib_chartio.internal.utils.toPx
+import kotlin.math.floor
+import kotlin.math.max
 
 internal class HorizontalGridDrawingDelegate(
     private val parent: View,
     @ColorInt private val color: Int,
     @ColorInt private val textColor: Int,
+    @Px private val gridStepsGap: Float,
     @Px strokeWidth: Float,
     @Px textSize: Float,
     pathEffect: PathEffect? = null
@@ -20,14 +24,14 @@ internal class HorizontalGridDrawingDelegate(
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
-        setColor(this@HorizontalGridDrawingDelegate.color)
+        color = this@HorizontalGridDrawingDelegate.color
         setStrokeWidth(strokeWidth)
         setPathEffect(pathEffect)
     }
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        setColor(this@HorizontalGridDrawingDelegate.textColor)
+        color = this@HorizontalGridDrawingDelegate.textColor
         setTextSize(textSize)
     }
 
@@ -42,9 +46,9 @@ internal class HorizontalGridDrawingDelegate(
             0F
         )
 
-    override fun prepare(chartBounds: RectF, pointsTransformerHelper: PointsTransformationHelper) {
+    override fun prepare(chartBounds: RectF, viewportBounds: RectF, pointsTransformerHelper: PointsTransformationHelper) {
         gridLineCoordinates.clear()
-        calculateGrid(chartBounds, pointsTransformerHelper) { positionY, viewportY ->
+        calculateGrid(chartBounds, viewportBounds, pointsTransformerHelper) { positionY, viewportY ->
             gridPath.moveTo(0F, viewportY)
             gridPath.lineTo(parent.width.toFloat(), viewportY)
             gridLineCoordinates.add(Pair(positionY.toString(), viewportY))
@@ -66,24 +70,22 @@ internal class HorizontalGridDrawingDelegate(
 
     private inline fun calculateGrid(
         chartBounds: RectF,
+        viewportBounds: RectF,
         pointsTransformerHelper: PointsTransformationHelper,
         onLineReady: (positionY: Int, viewportY: Float) -> Unit
     ) {
         val amplitude = chartBounds.height()
 
-        var currentStep = 0
+        val maxStepsCount = max(floor(viewportBounds.height() / gridStepsGap), 0F).toInt()
 
-        for (step in POSSIBLE_GRID_STEPS) {
-            if (amplitude / step > MIN_GRID_LINES &&
-                amplitude / step <= MAX_GRID_LINES
-            ) {
-                currentStep = step
-            }
-        }
-
-        if (currentStep == 0) {
+        if (maxStepsCount == 0) {
             return
         }
+
+        var stepsWidth = floor(amplitude / maxStepsCount).toInt()
+        stepsWidth = (stepsWidth / 10) * 10
+
+        val currentStep = stepsWidth
 
         var currentY = chartBounds.top.findNearest(currentStep)
 
@@ -93,7 +95,7 @@ internal class HorizontalGridDrawingDelegate(
 
             onLineReady(currentY.toInt(), viewportY)
 
-            currentY += currentStep
+            currentY += stepsWidth
         }
     }
 
@@ -101,14 +103,6 @@ internal class HorizontalGridDrawingDelegate(
 
     companion object {
         val GRID_TEXT_PADDING = 2F.toPx()
-
-        const val MIN_GRID_LINES = 3
-        const val MAX_GRID_LINES = 5
-
-        /**
-         * Should be sorted in a reverse order
-         */
-        val POSSIBLE_GRID_STEPS = intArrayOf(10000, 5000, 2000, 1000, 500, 300, 200, 100, 10, 5)
     }
 }
 

@@ -8,7 +8,7 @@ internal interface GridDrawingDelegate {
 
     fun getPadding(): RectF
 
-    fun prepare(chartBounds: RectF, pointsTransformerHelper: PointsTransformationHelper)
+    fun prepare(chartBounds: RectF, viewportBounds: RectF, pointsTransformerHelper: PointsTransformationHelper)
 
     fun draw(canvas: Canvas)
 

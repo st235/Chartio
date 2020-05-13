@@ -9,7 +9,7 @@ internal class NoGridDrawingDelegate: GridDrawingDelegate {
 
     override fun getPadding(): RectF = EMPTY
 
-    override fun prepare(chartBounds: RectF, pointsTransformerHelper: PointsTransformationHelper) {
+    override fun prepare(chartBounds: RectF, viewportBounds: RectF, pointsTransformerHelper: PointsTransformationHelper) {
     }
 
     override fun draw(canvas: Canvas) {

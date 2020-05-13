@@ -27,14 +27,15 @@
             android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="156dp"
-            app:lineWidth="2dp"
+            app:cv_lineWidth="2dp"
             android:paddingBottom="8dp"
-            app:lineRoundRadius="4dp"
-            app:lineColor="#f25749"
-            app:gridEnabled="false"
-            app:chartFillColors="@array/colors"
-            app:chartFillPositions="@array/positions"
-            app:animateOnNewData="true"
+            app:cv_lineRoundRadius="4dp"
+            app:cv_lineColor="#f25749"
+            app:cv_gridEnabled="true"
+            app:cv_gridStepGap="32dp"
+            app:cv_chartFillColors="@array/colors"
+            app:cv_chartFillPositions="@array/positions"
+            app:cv_animateOnNewData="true"
             />
     </LinearLayout>
 
@@ -58,14 +59,14 @@
             android:id="@+id/chart2"
             android:layout_width="match_parent"
             android:layout_height="156dp"
-            app:lineWidth="4dp"
+            app:cv_lineWidth="4dp"
             android:paddingBottom="8dp"
-            app:lineRoundRadius="4dp"
-            app:lineColor="#C847F4"
-            app:gridEnabled="false"
-            app:chartFillColors="@array/colors2"
-            app:chartFillPositions="@array/positions"
-            app:animateOnNewData="true"
+            app:cv_lineRoundRadius="4dp"
+            app:cv_lineColor="#C847F4"
+            app:cv_gridEnabled="false"
+            app:cv_chartFillColors="@array/colors2"
+            app:cv_chartFillPositions="@array/positions"
+            app:cv_animateOnNewData="true"
             />
     </LinearLayout>
 
@@ -89,12 +90,12 @@
             android:id="@+id/chart3"
             android:layout_width="match_parent"
             android:layout_height="156dp"
-            app:lineWidth="4dp"
+            app:cv_lineWidth="4dp"
             android:paddingBottom="8dp"
-            app:lineRoundRadius="4dp"
-            app:lineColor="@android:color/white"
-            app:gridEnabled="false"
-            app:animateOnNewData="true"
+            app:cv_lineRoundRadius="4dp"
+            app:cv_lineColor="@android:color/white"
+            app:cv_gridEnabled="false"
+            app:cv_animateOnNewData="true"
             />
     </LinearLayout>
 

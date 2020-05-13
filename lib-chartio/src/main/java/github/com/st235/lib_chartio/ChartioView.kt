@@ -91,13 +91,13 @@ class ChartioView @JvmOverloads constructor(
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ChartioView)
 
-        val lineColor = typedArray.getColor(R.styleable.ChartioView_lineColor, Color.BLACK)
-        val lineWidth = typedArray.getDimension(R.styleable.ChartioView_lineWidth, 0F)
-        lineRoundRadius = typedArray.getDimension(R.styleable.ChartioView_lineRoundRadius, 0F)
+        val lineColor = typedArray.getColor(R.styleable.ChartioView_cv_lineColor, Color.BLACK)
+        val lineWidth = typedArray.getDimension(R.styleable.ChartioView_cv_lineWidth, 0F)
+        lineRoundRadius = typedArray.getDimension(R.styleable.ChartioView_cv_lineRoundRadius, 0F)
         lineDrawingDelegate = StrokeSolidDrawingDelegate(lineColor, lineWidth, CornerPathEffect(lineRoundRadius).takeIf { lineRoundRadius > 0F })
 
-        val colorId = typedArray.getResourceId(R.styleable.ChartioView_chartFillColors, -1)
-        val positionId = typedArray.getResourceId(R.styleable.ChartioView_chartFillPositions, -1)
+        val colorId = typedArray.getResourceId(R.styleable.ChartioView_cv_chartFillColors, -1)
+        val positionId = typedArray.getResourceId(R.styleable.ChartioView_cv_chartFillPositions, -1)
 
         val colors = if (colorId == -1) intArrayOf() else context.resources.getStringArray(colorId).map { Color.parseColor(it) }.toIntArray()
         val positions = if (positionId == -1) floatArrayOf() else context.resources.getIntArray(positionId).map { it / 100F }.toFloatArray()
@@ -111,15 +111,17 @@ class ChartioView @JvmOverloads constructor(
             backgroundDrawingDelegate = NoBackgroundDrawingGradient()
         }
 
-        val gridColor = typedArray.getColor(R.styleable.ChartioView_gridColor, Color.DKGRAY)
-        val gridStrokeWidth = typedArray.getDimension(R.styleable.ChartioView_gridLineWidth, 0F)
+        val gridColor = typedArray.getColor(R.styleable.ChartioView_cv_gridColor, Color.DKGRAY)
+        val gridStrokeWidth = typedArray.getDimension(R.styleable.ChartioView_cv_gridLineWidth, 0F)
 
-        val gapWidth = typedArray.getDimension(R.styleable.ChartioView_gridGapWidth, 0F)
+        val gapWidth = typedArray.getDimension(R.styleable.ChartioView_cv_gridGapWidth, 0F)
 
-        val gridTextColor = typedArray.getColor(R.styleable.ChartioView_gridTextColor, Color.GRAY)
-        val gridTextSizeSize = typedArray.getDimension(R.styleable.ChartioView_gridTextSize, 12F.toPx())
+        val gridTextColor = typedArray.getColor(R.styleable.ChartioView_cv_gridTextColor, Color.GRAY)
+        val gridTextSizeSize = typedArray.getDimension(R.styleable.ChartioView_cv_gridTextSize, 12F.toPx())
 
-        val shouldDisableGrid = !typedArray.getBoolean(R.styleable.ChartioView_gridEnabled, true)
+        val shouldDisableGrid = !typedArray.getBoolean(R.styleable.ChartioView_cv_gridEnabled, true)
+
+        val gridStepGap = typedArray.getDimension(R.styleable.ChartioView_cv_gridStepGap, 0F)
 
         gridDrawingDelegate =
             GridDrawingDelegate.retrieveDelegate(
@@ -127,6 +129,7 @@ class ChartioView @JvmOverloads constructor(
                     this,
                     gridColor,
                     gridTextColor,
+                    gridStepGap,
                     gridStrokeWidth,
                     gridTextSizeSize,
                     DashPathEffect(floatArrayOf(gapWidth, gapWidth), 0F).takeIf { gapWidth > 0 }
@@ -134,8 +137,8 @@ class ChartioView @JvmOverloads constructor(
                 forceDisable = shouldDisableGrid
             )
 
-        shouldAnimateOnNewData = typedArray.getBoolean(R.styleable.ChartioView_animateOnNewData, false)
-        animationDuration = typedArray.getInteger(R.styleable.ChartioView_animationDuration, 1500).toLong()
+        shouldAnimateOnNewData = typedArray.getBoolean(R.styleable.ChartioView_cv_animateOnNewData, false)
+        animationDuration = typedArray.getInteger(R.styleable.ChartioView_cv_animationDuration, 1500).toLong()
 
         typedArray.recycle()
 
@@ -256,7 +259,7 @@ class ChartioView @JvmOverloads constructor(
         fillPath.lineTo( firstPoint.first, height + lineRoundRadius)
         fillPath.lineTo(firstPoint.first, firstPoint.second)
 
-        gridDrawingDelegate.prepare(chartBounds, sizeResolver)
+        gridDrawingDelegate.prepare(chartBounds, viewportBounds, sizeResolver)
     }
 
     private fun clearState() {
