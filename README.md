@@ -2,11 +2,25 @@
 
 # Chartio
 
-[ ![Download](https://api.bintray.com/packages/st235/maven/chartioview/images/download.svg) ](https://bintray.com/st235/maven/chartioview/_latestVersion)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.st235/chartioview/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.st235/chartioview)
 
 A lightweight linear chart library for Android
 
 ## Download me
+
+__Important: library was migrated from JCenter to MavenCentral__ 
+
+It means that it may be necessary to add __mavenCentral__ repository to your repositories list
+
+```groovy
+allprojects {
+    repositories {
+        // your repositories
+
+        mavenCentral()
+    }
+}
+```
 
 - Maven
 
